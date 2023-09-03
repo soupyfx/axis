@@ -24,4 +24,4 @@ loadstring = loadstring(game:HttpGet("https://raw.githubusercontent.com/soupyfx/
 
 ## usage
 
-to read the docs click [here](https://github.com/soupyfx/axis/wiki/documentation)
+to read the docs click [here](https://github.com/soupyfx/axis/wiki/thedocumentation)
