@@ -1,8 +1,14 @@
-local axis = {}
-local code = {}
+local libary = {}
 
-local needed = {"internal","gui","tab","button","title","paragraph","toggle","slider","dropdown","notication"}
-for index, need in needed do code[need] = loadstring(game:HttpGet("https://raw.githubusercontent.com/soupyfx/chlorine/main/"..need..".lua"))() end
+local needed = {"internal","gui"}
+for index, need in needed do libary[need] = loadstring(game:HttpGet("https://raw.githubusercontent.com/soupyfx/chlorine/main/"..need..".lua"))() end
+--for index, need in needed do libary[need] = require(game:GetService("ReplicatedStorage"):FindFirstChild(need)) end
+
+local needed = {"tab","button","title","paragraph","toggle","slider","dropdown","notication"}
+for index, need in needed do libary.internal.elements[need] = loadstring(game:HttpGet("https://raw.githubusercontent.com/soupyfx/chlorine/main/"..need..".lua"))() end
+--for index, need in needed do libary.internal.elements[need] = require(game:GetService("ReplicatedStorage"):FindFirstChild(need)) end
+
+local axis = {}
 
 --[[
 / new
@@ -11,24 +17,16 @@ for index, need in needed do code[need] = loadstring(game:HttpGet("https://raw.g
 ]]
 
 function axis.new(options)
-	local libary = {}
-	libary.code = code
-	libary.internal = libary.code.internal
-	
-	libary.options = libary.internal.verify({
+	libary.data = libary.internal.verify({
 		title = "axis",
 		key = { enabled = false, key = "" }
 	}, options or {})
 	
-	if libary.options.key.enabled then 
-		if not libary.internal.key(libary.options.key.key) then return nil end
+	if libary.data.key.enabled then 
+		if not libary.internal.key(libary.data.key.key) then return nil end
 	end
 	
-	libary.elements = {tab={},button={},title={},paragraph={},toggle={},slider={},dropdown={},notication={}}
-	libary.gui = libary.code.gui(libary)
-	
-	libary.gui.topbar:FindFirstChildWhichIsA("TextLabel").Text = libary.options.title
-	libary.internal.drag("main", libary.gui.frame, libary.gui.topbar)
+	libary.gui = libary.gui(libary)
 	
 	--[[
 	/ tab
@@ -37,13 +35,13 @@ function axis.new(options)
 	]]
 	
 	function libary.tab(name, options)
-		if libary.elements.tab[name] ~= nil then
+		if libary.internal.elements.tab[name] ~= nil then
 			libary.internal.error("tab "..name.." already exists")
 			return nil
 		end
 		
-		libary.elements.tab[name] = libary.code.tab.new(libary, name, options)
-		return libary.elements.tab[name]
+		libary.internal.elements.tab[name] = libary.internal.elements.tab.new(libary, name, options)
+		return libary.internal.elements.tab[name]
 	end
 
 	--[[
@@ -53,13 +51,13 @@ function axis.new(options)
 	]]
 
 	function libary.notication(name, options)
-		if libary.elements.notication[name] ~= nil then
+		if libary.internal.elements.notication[name] ~= nil then
 			libary.internal.error("notication "..name.." already exists")
 			return nil
 		end
 		
-		libary.elements.notication[name] = libary.code.notication.new(libary, name, options)
-		return libary.elements.notication[name]
+		libary.internal.elements.notication[name] = libary.internal.elements.notication.new(libary, name, options)
+		return libary.internal.elements.notication[name]
 	end
 	
 	return libary

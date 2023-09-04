@@ -2,13 +2,13 @@ local button = {}
 
 function button.new(parents, name, options)
 	local button = {}
-	button.options = parents.libary.internal.verify({
+	button.data = parents.libary.internal.verify({
 		title = "button",
-		callback = function() parents.libary.internal.error("no callback was set for button "..options.name) end
+		callback = function() parents.libary.internal.error("no callback was set for button "..name) end
 	}, options or {})
 	
 	local instance = parents.libary.gui.assets.button:Clone()
-	instance.Text = button.options.title
+	instance.Text = button.data.title
 	instance.LayoutOrder = parents.tab._layout()
 	instance.Parent = parents.tab.instances.frame.objects
 
@@ -20,7 +20,7 @@ function button.new(parents, name, options)
 	]]
 
 	function button.destroy()
-		table.remove(parents.libary.elements.button, table.find(parents.libary.elements.button, name, 1))
+		table.remove(parents.libary.internal.elements.button, table.find(parents.libary.internal.elements.button, name, 1))
 		button.instance:Destroy()
 	end
 	
@@ -31,7 +31,7 @@ function button.new(parents, name, options)
 	]]
 	
 	function button.rename(title)
-		button.options.title = title
+		button.data.title = title
 		button.instance.Text = title
 	end
 	
@@ -42,12 +42,15 @@ function button.new(parents, name, options)
 	]]
 
 	function button.callback(func)
-		button.options.callback = func
+		button.data.callback = func
 	end
 
 	button.instance.Activated:Connect(function()
-		button.options.callback()
+		button.data.callback()
 	end)
+
+	print("----- button -----")
+	print(button)
 
 	return button
 end

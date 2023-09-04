@@ -640,6 +640,8 @@ return function(libary)
 		},
 	})
 
+	gui.topbar:FindFirstChildWhichIsA("TextLabel").Text = libary.data.title
+	libary.internal.drag("main", gui.frame, gui.topbar)
 
 	return gui
 end

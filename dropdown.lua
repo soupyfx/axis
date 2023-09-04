@@ -2,53 +2,52 @@ local dropdown = {}
 
 function dropdown.new(parents, name, options)
 	local dropdown = {}
-	dropdown.options = parents.libary.internal.verify({
+	dropdown.data = parents.libary.internal.verify({
 		title = "dropdown",
 		values = {"skirt"},
-		callback = function() parents.libary.internal.error("no callback was set for dropdown "..options.name) end
+		callback = function() parents.libary.internal.error("no callback was set for dropdown "..name) end
 	}, options or {})
 	
-	if rawlen(options.values) == 0 then 
-		parents.libary.internal.error("dropdown "..options.name.." cannot have no values")
+	if rawlen(dropdown.data.values) == 0 then 
+		parents.libary.internal.error("dropdown "..name.." cannot have no values")
 		return nil
 	end
 	
 	local instance = parents.libary.gui.assets.dropdown:Clone()
-	instance.button.Text = dropdown.options.title
+	instance.button.Text = dropdown.data.title
 	instance.LayoutOrder = parents.tab._layout()
 	instance.Parent = parents.tab.instances.frame.objects
 	
 	dropdown.instance = instance
 	
-	dropdown.selected = dropdown.options.values[1]
-	dropdown.open = false
-	dropdown.buttons = {}
+	dropdown.data.open = false
+	dropdown.data.buttons = {}
 	
 	function dropdown._recreate()
-		for index, name in dropdown.buttons do
+		for index, name in dropdown.data.buttons do
 			dropdown.instance.objects:FindFirstChild(name):Destroy()
 		end
 
-		dropdown.buttons = {}
+		dropdown.data.buttons = {}
 
-		for index, value in dropdown.options.values do
+		for index, value in dropdown.data.values do
 			local thing = parents.libary.gui.assets.dropdownSelect:Clone()
 			thing.Name = value
 			thing.Text = value
 			thing.Parent = dropdown.instance.objects
 
-			table.insert(dropdown.buttons, value)
+			table.insert(dropdown.data.buttons, value)
 
 			thing.Activated:Connect(function()
-				dropdown.options.callback(value)
+				dropdown.data.callback(value)
 			end)
 		end
 	end
 	dropdown._recreate()
 	
 	function dropdown._update()
-		if dropdown.open then
-			instance.Size = UDim2.new(1,0,0,(35+(rawlen(dropdown.options.values)*25)))
+		if dropdown.data.open then
+			instance.Size = UDim2.new(1,0,0,(35+(rawlen(dropdown.data.values)*25)))
 		else
 			instance.Size = UDim2.new(1,0,0,30)
 		end
@@ -61,7 +60,7 @@ function dropdown.new(parents, name, options)
 	]]
 
 	function dropdown.destroy()
-		table.remove(parents.libary.elements.dropdown, table.find(parents.libary.elements.dropdown, name, 1))
+		table.remove(parents.libary.internal.elements.dropdown, table.find(parents.libary.internal.elements.dropdown, name, 1))
 		dropdown.instance:Destroy()
 		
 	end
@@ -73,7 +72,7 @@ function dropdown.new(parents, name, options)
 	]]
 	
 	function dropdown.rename(title)
-		dropdown.options.title = title
+		dropdown.data.title = title
 		dropdown.instance.button.Text = title
 	end
 	
@@ -84,7 +83,7 @@ function dropdown.new(parents, name, options)
 	]]
 
 	function dropdown.callback(func)
-		dropdown.options.callback = func
+		dropdown.data.callback = func
 	end
 	
 	--[[
@@ -95,11 +94,11 @@ function dropdown.new(parents, name, options)
 
 	function dropdown.value(values)
 		if rawlen(values) == 0 then 
-			parents.libary.internal.error("dropdown "..options.name.." cannot have no values")
+			parents.libary.internal.error("dropdown "..name.." cannot have no values")
 			return nil
 		end
 
-		dropdown.options.values = values
+		dropdown.data.values = values
 		dropdown._recreate()
 	end
 	
@@ -110,7 +109,7 @@ function dropdown.new(parents, name, options)
 	]]
 
 	function dropdown.set(value)
-		dropdown.open = value
+		dropdown.data.open = value
 		dropdown._update()
 	end
 	
@@ -121,13 +120,16 @@ function dropdown.new(parents, name, options)
 	]]
 
 	function dropdown.toggle()
-		dropdown.open = not dropdown.open
+		dropdown.data.open = not dropdown.data.open
 		dropdown._update()
 	end
 
 	dropdown.instance.button.Activated:Connect(function()
 		dropdown.toggle()
 	end)
+
+	print("----- dropdown -----")
+	print(dropdown)
 
 	return dropdown
 end

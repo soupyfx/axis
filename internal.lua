@@ -141,11 +141,8 @@ function internal:create(type, properties, parts)
 	return instance
 end
 
-function internal.rawr()
-
-end
-
-internal.current = nil
+internal.elements = {tab={},button={},title={},paragraph={},toggle={},slider={},dropdown={},notication={}}
 internal.connections = {}
+internal.current = nil
 
 return internal

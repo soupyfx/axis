@@ -2,12 +2,12 @@ local title = {}
 
 function title.new(parents, name, options)
 	local title = {}
-	title.options = parents.libary.internal.verify({
+	title.data = parents.libary.internal.verify({
 		title = "title",
 	}, options or {})
 	
 	local instance = parents.libary.gui.assets.title:Clone()
-	instance.Text = title.options.title
+	instance.Text = title.data.title
 	instance.LayoutOrder = parents.tab._layout()
 	instance.Parent = parents.tab.instances.frame.objects
 	
@@ -19,7 +19,7 @@ function title.new(parents, name, options)
 	]]
 
 	function title.destroy()
-		table.remove(parents.libary.elements.title, table.find(parents.libary.elements.title, name, 1))
+		table.remove(parents.libary.internal.elements.title, table.find(parents.libary.internal.elements.title, name, 1))
 		title.instance:Destroy()
 	end
 	
@@ -30,9 +30,12 @@ function title.new(parents, name, options)
 	]]
 
 	function title.rename(new)
-		title.options.title = new
+		title.data.title = new
 		title.instance.Text = new
 	end
+
+	print("----- title -----")
+	print(title)
 
 	return title
 end
